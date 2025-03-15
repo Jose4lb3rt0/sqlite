@@ -1,17 +1,15 @@
 package com.jadse.sqlite.controller;
 
 import android.content.Context;
-import android.database.Cursor;
 
 import com.jadse.sqlite.db.Db;
-import com.jadse.sqlite.model.Usuario;
 
 public class DemoController {
-    Db db;
+//    com.jadse.sqlite.db.Db;
 
-    public DemoController(Context context) { db = new Db(context); }
+//    public DemoController(Context context) { Db = new Db(context); }
 
-    public boolean Login(Usuario usuario) {
+    /*public boolean Login(Usuario usuario) {
         db.Sentencia( String.format("select * from Usuario where Dni='%s' and Passwordd='%s'", usuario.getDni(), usuario.getPasswordd()) );
         Cursor cursor = db.getCursor();
         if ( cursor.moveToFirst() )
@@ -19,6 +17,6 @@ public class DemoController {
 
         cursor.close();
         return usuario.getId() > 0;
-    }
+    }*/
 
 }

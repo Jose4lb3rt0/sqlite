@@ -1,40 +1,40 @@
-package com.jadse.sqlite.ui.dashboard;
+package com.jadse.sqlite.ui;
 
 import android.content.Context;
 import android.os.Bundle;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
-import com.jadse.sqlite.controller.DemoController;
-import com.jadse.sqlite.databinding.FragmentDashboardBinding;
-import com.jadse.sqlite.databinding.FragmentHomeBinding;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
 
-public class DashboardFragment extends Fragment {
+import com.jadse.sqlite.controller.UsuarioDao;
+import com.jadse.sqlite.databinding.FragmentPerfilBinding;
+import com.jadse.sqlite.model.Usuario;
 
-    private FragmentDashboardBinding binding;
+public class Perfil extends Fragment {
+    FragmentPerfilBinding binding;
+    View view;
     Context context;
     NavController navController;
-    View view;
 
-    DemoController controller;
+    Usuario usuario;
+    UsuarioDao usuarioDao;
 
     @Override
-    public void onDestroyView() {
-        super.onDestroyView();
+    public void onDestroy() {
+        super.onDestroy();
         binding = null;
     }
 
+    @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        binding = FragmentDashboardBinding.inflate(inflater, container, false);
+        binding = FragmentPerfilBinding.inflate(inflater, container, false);
         return view = binding.getRoot();
     }
 
@@ -43,8 +43,12 @@ public class DashboardFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         context = getContext();
         navController = Navigation.findNavController(view);
-        controller = new DemoController(context);
+        usuarioDao = new UsuarioDao( context );
 
-//        binding.btnIniciar
+
+    }
+
+    public void CerrarSesion(){
+
     }
 }

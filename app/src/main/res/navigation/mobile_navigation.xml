@@ -3,23 +3,30 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/mobile_navigation"
-    app:startDestination="@+id/navigation_home">
+    app:startDestination="@+id/nav_login">
 
     <fragment
-        android:id="@+id/navigation_home"
-        android:name="com.jadse.sqlite.ui.home.HomeFragment"
+        android:id="@+id/nav_login"
+        android:name="com.jadse.sqlite.ui.Login"
         android:label="@string/title_home"
+        tools:layout="@layout/fragment_login" >
+        <action
+            android:id="@+id/action_nav_login_to_nav_register"
+            app:destination="@id/nav_register" />
+        <action
+            android:id="@+id/nav_home"
+            app:destination="@id/nav_home" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_register"
+        android:name="com.jadse.sqlite.ui.Register"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_register" />
+    <fragment
+        android:id="@+id/nav_home"
+        android:name="com.jadse.sqlite.ui.Home"
+        android:label="fragment_home"
         tools:layout="@layout/fragment_home" />
 
-    <fragment
-        android:id="@+id/navigation_dashboard"
-        android:name="com.jadse.sqlite.ui.dashboard.DashboardFragment"
-        android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_dashboard" />
-
-    <fragment
-        android:id="@+id/navigation_notifications"
-        android:name="com.jadse.sqlite.ui.notifications.NotificationsFragment"
-        android:label="@string/title_notifications"
-        tools:layout="@layout/fragment_notifications" />
 </navigation>

@@ -5,22 +5,13 @@ import android.database.Cursor;
 import java.io.Serializable;
 
 public class Usuario implements Serializable {
-    int id;
-    String Nombres, Apellidos, Dni, Passwordd;
+    String id, Nombres, Apellidos, Telefono, Correo, Passwordd, Session;
 
-    public void setRegistro(Cursor cursor) {
-        this.id = cursor.getInt(0);
-        Nombres = cursor.getString(1);
-        Apellidos = cursor.getString(2);
-        Dni = cursor.getString(3);
-        Passwordd = cursor.getString(4);
-    }
-
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -40,12 +31,20 @@ public class Usuario implements Serializable {
         Apellidos = apellidos;
     }
 
-    public String getDni() {
-        return Dni;
+    public String getTelefono() {
+        return Telefono;
     }
 
-    public void setDni(String dni) {
-        Dni = dni;
+    public void setTelefono(String telefono) {
+        Telefono = telefono;
+    }
+
+    public String getCorreo() {
+        return Correo;
+    }
+
+    public void setCorreo(String correo) {
+        Correo = correo;
     }
 
     public String getPasswordd() {
@@ -55,4 +54,25 @@ public class Usuario implements Serializable {
     public void setPasswordd(String passwordd) {
         Passwordd = passwordd;
     }
+
+    public String getSession() {
+        return Session;
+    }
+
+    public void setSession(String session) {
+        Session = session;
+    }
+
+    public Usuario() { }
+
+    public Usuario( Cursor cursor ) {
+        id = cursor.getString(0);
+        Nombres = cursor.getString(1);
+        Apellidos = cursor.getString(2);
+        Telefono = cursor.getString(3);
+        Correo = cursor.getString(4);
+        Passwordd = cursor.getString(5);
+        Session = cursor.getString(6);
+    }
+
 }
