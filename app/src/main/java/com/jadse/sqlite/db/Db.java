@@ -12,7 +12,7 @@ public class Db extends SQLiteOpenHelper {
     String _SQL;
 
     public Db(@Nullable Context context) {
-        super( context, "optica.db", null, 1 );
+        super( context, "sqliteApp.db", null, 1 );
         db = getWritableDatabase();
     }
 
@@ -24,16 +24,6 @@ public class Db extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         db.execSQL( "create table Usuario ( id INTEGER PRIMARY KEY, Nombres text, Apellidos text, Telefono text, Correo text, Passwordd text, Session text )" );
-        /*db.execSQL( "create table Marca ( id integer, Detalle text )" );
-        db.execSQL( "create table Categoria ( id integer, Detalle text )" );
-        db.execSQL( "create table CategoriaMarca ( idCategoria integer, idMarca integer )" );
-
-        db.execSQL( "create table Producto ( id integer, Modelo text, idCategoria integer," +
-                " idMarca integer,idColorMarco integer,idColorLente integer," +
-                " idFormaMarco integer, idMaterialMontura integer, idMaterialLente integer," +
-                " Genero text, Varilla text, Puente text, Espejado text, Polarizado text, Estado text," +
-                " Precio real, Stock integer, Categoria text, Marca text, ColorMarco text, ColorLente text," +
-                " FormaMarco text, MaterialMontura text, MaterialLente text )");*/
     }
 
     @Override

@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 
 import com.jadse.sqlite.controller.UsuarioDao;
 import com.jadse.sqlite.databinding.FragmentHomeBinding;
+import com.jadse.sqlite.db.Db;
 import com.jadse.sqlite.model.Usuario;
 
 public class Home extends Fragment {
@@ -23,6 +24,7 @@ public class Home extends Fragment {
     Context context;
     View view;
 
+    Db db;
     Usuario usuario;
     UsuarioDao usuarioDao;
 
@@ -46,5 +48,11 @@ public class Home extends Fragment {
         navController = Navigation.findNavController(view);
         usuarioDao = new UsuarioDao(context);
 
+        binding.btnCerrarSesion.setOnClickListener(v -> btnCerrarSesion_OnClick());
+    }
+
+    private void btnCerrarSesion_OnClick() {
+        String null1 = null;
+        db.Sentencia("update from Usuario set Session");
     }
 }

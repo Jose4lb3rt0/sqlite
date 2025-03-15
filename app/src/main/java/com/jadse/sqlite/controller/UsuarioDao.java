@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 
+import com.google.android.material.snackbar.Snackbar;
 import com.jadse.sqlite.MainActivity;
 import com.jadse.sqlite.db.Db;
 import com.jadse.sqlite.model.Usuario;
@@ -27,8 +28,16 @@ public class UsuarioDao {
         db.Insert("Usuario", values);
     }
 
-    public void getUsuario(String correo, String passwordd) {
-        db.Sentencia("select * from Usuario where Correo=" + correo);
+    public void Login (String correo, String passwordd) {
+        db.Sentencia(String.format( "select * from Usuario where Correo ='%s' and Passwordd = '%s'", correo, passwordd ) );
+        Cursor cursor =db.getCursor();
+        if (cursor.moveToFirst())
+            MainActivity.usuario = new Usuario(cursor);
+        cursor.close();
+    }
+
+    public void getUsuario() {
+        db.Sentencia("select * from Usuario");
         Cursor cursor = db.getCursor();
         if ( cursor.moveToFirst() )
             MainActivity.usuario = cursor.isNull(6) ? null : new Usuario( cursor );

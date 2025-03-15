@@ -11,7 +11,7 @@
     >
 
         <Button
-            android:id="@+id/btnRegistrar"
+            android:id="@+id/btnCerrarSesion"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Cerrar sesión"

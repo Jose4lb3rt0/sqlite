@@ -1,5 +1,7 @@
 package com.jadse.sqlite.ui;
 
+import android.app.AlertDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
@@ -14,6 +16,8 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.jadse.sqlite.MainActivity;
 import com.jadse.sqlite.R;
 import com.jadse.sqlite.controller.UsuarioDao;
 import com.jadse.sqlite.databinding.FragmentLoginBinding;
@@ -55,20 +59,28 @@ public class Login extends Fragment {
             @Override public void onTextChanged(CharSequence s, int start, int before, int count) {}
             @Override public void afterTextChanged(Editable s) {}
         });
-        
+
         binding.btnIniciar.setOnClickListener(v -> btnIniciar_OnClick());
 
+       /* if (MainActivity.usuario.getSession() != null)
+            navController.navigate(R.id.nav_home);*/
     }
 
     private void btnIniciar_OnClick() {
         String sCorreo = binding.edtCorreo.getText().toString().trim();
         String sPasswordd = binding.edtPassword.getText().toString().trim();
+        String sMensaje = "Usuario y/o passwordd inválidos";
 
-        try {
-            usuarioDao.getUsuario(sCorreo, sPasswordd);
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        if (sCorreo.isEmpty() || sPasswordd.isEmpty()) {
+            Snackbar.make(view, sMensaje, Snackbar.LENGTH_LONG).show();
         }
+
+        usuarioDao.Login(sCorreo, sPasswordd);
+
+        new AlertDialog.Builder(context)
+                .setTitle("Iniciar sesión")
+                .setMessage("Usuario iniciado con éxito")
+                .setPositiveButton("Aceptar", (dialog, which) -> navController.navigate(R.id.nav_home))
+                .show();
     }
 }
