@@ -52,7 +52,6 @@ public class Home extends Fragment {
     }
 
     private void btnCerrarSesion_OnClick() {
-        String null1 = null;
-        db.Sentencia("update from Usuario set Session");
+        db.Sentencia("update from Usuario set Session=" + null + " where Correo=" + usuario.getCorreo());
     }
 }

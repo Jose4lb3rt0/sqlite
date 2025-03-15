@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.jadse.sqlite.R;
 import com.jadse.sqlite.controller.UsuarioDao;
 import com.jadse.sqlite.databinding.FragmentRegisterBinding;
@@ -26,6 +27,7 @@ public class Register extends Fragment {
 
     Usuario usuario;
     UsuarioDao usuarioDao;
+    FirebaseFirestore firestore;
 
     @Override
     public void onDestroy() {
@@ -44,12 +46,34 @@ public class Register extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         context = getContext();
         navController = Navigation.findNavController(view);
+        firestore = FirebaseFirestore.getInstance();
 
         navController = Navigation.findNavController(view);
         usuarioDao = new UsuarioDao( context );
 
         binding.btnSignIn.setOnClickListener(v -> navController.navigate(R.id.nav_login));
         binding.btnRegistrar.setOnClickListener(v -> btnRegistrar_OnClick());
+
+        /*binding.edtNombres.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) { binding.tilNombres.setError(""); }
+            @Override public void afterTextChanged(Editable s) { } });
+        binding.edtApellidos.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) { binding.tilApellidos.setError(""); }
+            @Override public void afterTextChanged(Editable s) { } });
+        binding.edtTelefono.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) { binding.tilTelefono.setError(""); }
+            @Override public void afterTextChanged(Editable s) { } });
+        binding.edtCorreo.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) { binding.tilCorreo.setError(""); }
+            @Override public void afterTextChanged(Editable s) { } });
+        binding.edtPasswordd.addTextChangedListener(new TextWatcher() {
+            @Override public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override public void onTextChanged(CharSequence s, int start, int before, int count) { binding.tilPasswordd.setError(""); }
+            @Override public void afterTextChanged(Editable s) { } });*/
     }
 
     private void btnRegistrar_OnClick() {
@@ -66,14 +90,27 @@ public class Register extends Fragment {
         usuario.setCorreo(sCorreo);
         usuario.setPasswordd(sPasswordd);
 
-        //if (sNombres.isEmpty()) binding.tilNombres.setError("Ingrese sus nombres");
-        UsuarioDao usuarioDao= new UsuarioDao(context);
-        usuarioDao.Guardar( usuario );
-
-        new AlertDialog.Builder(context)
-                .setTitle("Registrar usuario")
-                .setMessage("Usuario regisrado con éxito")
-                .setPositiveButton("Aceptar", (dialog, which) -> navController.navigate(R.id.nav_login))
-                .show();
+        /*if ( sNombres.isEmpty() ) binding.tilNombres.setError( "Ingrese sus nombres");
+        else if ( sApellidos.isEmpty() ) binding.tilApellidos.setError( "Ingrese sus apellidos");
+        else if ( sTelefono.isEmpty() ) binding.tilTelefono.setError( "Ingrese un número de teléfono");
+        else if ( sCorreo.isEmpty() ) binding.tilCorreo.setError( "Ingrese su correo");
+        else if ( sPasswordd.isEmpty() ) binding.tilPasswordd.setError( "Ingrese una contraseña");
+        else*/
+        firestore.collection("usuarios")
+                .add( usuario )
+                .addOnSuccessListener( documentReference ->
+                        new AlertDialog.Builder( context )
+                                .setTitle("Registrar usuario")
+                                .setMessage( "Usuario registrado con éxito")
+                                .setPositiveButton( "Aceptar", (dialog, which) -> navController.navigateUp() )
+                                .show() )
+                .addOnFailureListener( e ->
+                        new AlertDialog.Builder( context )
+                                .setTitle("Registrar usuario")
+                                .setMessage( "Usuario no pudo ser registrado, " + e.getMessage())
+                                .setPositiveButton( "Aceptar", (dialog, which) -> { } )
+                                .show() );
+        /*UsuarioDao usuarioDao= new UsuarioDao(context);
+        usuarioDao.Guardar( usuario );*/
     }
 }

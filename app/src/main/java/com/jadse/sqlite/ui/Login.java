@@ -17,6 +17,8 @@ import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
 import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.jadse.sqlite.MainActivity;
 import com.jadse.sqlite.R;
 import com.jadse.sqlite.controller.UsuarioDao;
@@ -31,6 +33,7 @@ public class Login extends Fragment {
 
     Usuario usuario;
     UsuarioDao usuarioDao;
+    FirebaseFirestore firestore;
 
     @Override
     public void onDestroy() {
@@ -50,7 +53,7 @@ public class Login extends Fragment {
         context = getContext();
         navController = Navigation.findNavController(view);
         usuarioDao = new UsuarioDao( context );
-
+        firestore = FirebaseFirestore.getInstance();
 
         binding.btnSignUp.setOnClickListener(v -> navController.navigate(R.id.nav_register));
 
@@ -62,7 +65,7 @@ public class Login extends Fragment {
 
         binding.btnIniciar.setOnClickListener(v -> btnIniciar_OnClick());
 
-       /* if (MainActivity.usuario.getSession() != null)
+        /*if (MainActivity.usuario.getSession() != null)
             navController.navigate(R.id.nav_home);*/
     }
 
@@ -71,11 +74,44 @@ public class Login extends Fragment {
         String sPasswordd = binding.edtPassword.getText().toString().trim();
         String sMensaje = "Usuario y/o passwordd inválidos";
 
+        /*if (sCorreo.isEmpty()) binding.tilCorreo.setError("Ingrese su correo");
+        else if (sPasswordd.isEmpty()) binding.tilPasswordd.setError("Ingrese una contraseña");*/
+
         if (sCorreo.isEmpty() || sPasswordd.isEmpty()) {
             Snackbar.make(view, sMensaje, Snackbar.LENGTH_LONG).show();
         }
 
-        usuarioDao.Login(sCorreo, sPasswordd);
+        firestore.collection("usuarios")
+                .whereEqualTo("correo", sCorreo)
+                .whereEqualTo("passwordd", sPasswordd)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    if ( queryDocumentSnapshots.isEmpty() )
+                        new AlertDialog.Builder(context)
+                                .setTitle("Iniciar sesión")
+                                .setMessage("Correo y/o contraseña inválidos")
+                                .setCancelable(false)
+                                .setPositiveButton("Aceptar", (dialog, which) -> { } )
+                                .show();
+                    else {
+                        DocumentSnapshot snapshot = queryDocumentSnapshots.getDocuments().get(0);
+                        usuario.setId( snapshot.getString("id"));
+                        usuario.setNombres( snapshot.getString("nombres") );
+                        usuario.setApellidos( snapshot.getString("apellidos") );
+                        usuario.setTelefono( snapshot.getString("telefono") );
+                        usuario.setCorreo( snapshot.getString("correo"));
+                        MainActivity.usuario = usuario;
+                        navController.navigate( R.id.nav_home );
+                    } } )
+                .addOnFailureListener( e ->
+                        new AlertDialog.Builder( context )
+                                .setTitle("Iniciar sesión")
+                                .setMessage( "No se pudo comprobar credenciales, reintentar")
+                                .setCancelable(false)
+                                .setPositiveButton( "Aceptar", (dialog, which) -> { } )
+                                .show() );
+
+//        usuarioDao.Login(sCorreo, sPasswordd);
 
         new AlertDialog.Builder(context)
                 .setTitle("Iniciar sesión")

@@ -10,6 +10,7 @@ import androidx.navigation.Navigation;
 import androidx.navigation.ui.AppBarConfiguration;
 import androidx.navigation.ui.NavigationUI;
 
+import com.google.firebase.firestore.FirebaseFirestore;
 import com.jadse.sqlite.databinding.ActivityMainBinding;
 import com.jadse.sqlite.model.Usuario;
 
@@ -22,9 +23,13 @@ public class MainActivity extends AppCompatActivity {
     public static String URL_API = "https://oaemdl.es/optica_sweb_php/";
     public static Usuario usuario = null;
 
+    FirebaseFirestore fFirestore;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        fFirestore = FirebaseFirestore.getInstance();
 
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
