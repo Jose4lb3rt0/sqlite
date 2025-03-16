@@ -13,6 +13,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.material.snackbar.Snackbar;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.jadse.sqlite.MainActivity;
+import com.jadse.sqlite.R;
 import com.jadse.sqlite.controller.UsuarioDao;
 import com.jadse.sqlite.databinding.FragmentHomeBinding;
 import com.jadse.sqlite.db.Db;
@@ -27,6 +31,7 @@ public class Home extends Fragment {
     Db db;
     Usuario usuario;
     UsuarioDao usuarioDao;
+    FirebaseFirestore firestore;
 
     @Override
     public void onDestroy() {
@@ -47,11 +52,31 @@ public class Home extends Fragment {
         context = getContext();
         navController = Navigation.findNavController(view);
         usuarioDao = new UsuarioDao(context);
+        firestore = FirebaseFirestore.getInstance();
 
         binding.btnCerrarSesion.setOnClickListener(v -> btnCerrarSesion_OnClick());
     }
 
     private void btnCerrarSesion_OnClick() {
-        db.Sentencia("update from Usuario set Session=" + null + " where Correo=" + usuario.getCorreo());
+        if (MainActivity.usuario != null && MainActivity.usuario.getCorreo() != null)
+        {
+            String usuarioId = MainActivity.usuario.getId();
+
+            //session a null
+            firestore.collection("usuarios")
+                    .document(usuarioId)
+                    .update("session", null)
+                    .addOnSuccessListener( v -> {
+                        Snackbar.make(view, "Sesión cerrada", Snackbar.LENGTH_LONG).show();
+                        MainActivity.usuario = null;
+                        navController.navigate(R.id.nav_login);
+                    })
+                    .addOnFailureListener( v ->
+                        Snackbar.make(view, "Error al cerrar sesión", Snackbar.LENGTH_LONG).show()
+                    );
+            //db.Sentencia("update Usuario set Session=NULL where Correo='" + usuario.getCorreo() + "'");
+        } else {
+            Snackbar.make(view, "No hay usuario autenticado", Snackbar.LENGTH_LONG).show();
+        }
     }
 }

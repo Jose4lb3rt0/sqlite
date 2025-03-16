@@ -72,13 +72,12 @@ public class Login extends Fragment {
     private void btnIniciar_OnClick() {
         String sCorreo = binding.edtCorreo.getText().toString().trim();
         String sPasswordd = binding.edtPassword.getText().toString().trim();
-        String sMensaje = "Usuario y/o passwordd inválidos";
 
         /*if (sCorreo.isEmpty()) binding.tilCorreo.setError("Ingrese su correo");
         else if (sPasswordd.isEmpty()) binding.tilPasswordd.setError("Ingrese una contraseña");*/
 
         if (sCorreo.isEmpty() || sPasswordd.isEmpty()) {
-            Snackbar.make(view, sMensaje, Snackbar.LENGTH_LONG).show();
+            Snackbar.make(view, "Usuario y/o passwordd inválidos", Snackbar.LENGTH_LONG).show();
         }
 
         firestore.collection("usuarios")
@@ -95,28 +94,40 @@ public class Login extends Fragment {
                                 .show();
                     else {
                         DocumentSnapshot snapshot = queryDocumentSnapshots.getDocuments().get(0);
-                        usuario.setId( snapshot.getString("id"));
-                        usuario.setNombres( snapshot.getString("nombres") );
-                        usuario.setApellidos( snapshot.getString("apellidos") );
-                        usuario.setTelefono( snapshot.getString("telefono") );
-                        usuario.setCorreo( snapshot.getString("correo"));
-                        MainActivity.usuario = usuario;
-                        navController.navigate( R.id.nav_home );
+                        String usuarioId = snapshot.getId();
+
+                        //usuario = new Usuario();
+                        MainActivity.usuario = new Usuario();
+                        MainActivity.usuario.setId(usuarioId);
+                        MainActivity.usuario.setNombres(snapshot.getString("nombres"));
+                        MainActivity.usuario.setApellidos(snapshot.getString("apellidos"));
+                        MainActivity.usuario.setTelefono(snapshot.getString("telefono"));
+                        MainActivity.usuario.setCorreo(snapshot.getString("correo"));
+                        MainActivity.usuario.setSession("true");
+
+                        firestore.collection("usuarios")
+                                .document( snapshot.getId() ) //su id
+                                .update("session", "true")
+                                .addOnSuccessListener(v -> {
+                                    navController.navigate(R.id.nav_home);
+                                })
+                                .addOnFailureListener(v -> {
+                                    Snackbar.make(view, "Error al actualizar session", Snackbar.LENGTH_LONG).show();
+                                });
                     } } )
                 .addOnFailureListener( e ->
                         new AlertDialog.Builder( context )
-                                .setTitle("Iniciar sesión")
+                                .setTitle("No se pudo iniciar sesión")
                                 .setMessage( "No se pudo comprobar credenciales, reintentar")
                                 .setCancelable(false)
                                 .setPositiveButton( "Aceptar", (dialog, which) -> { } )
                                 .show() );
-
-//        usuarioDao.Login(sCorreo, sPasswordd);
-
-        new AlertDialog.Builder(context)
+        // SQLITE
+        //  usuarioDao.Login(sCorreo, sPasswordd);
+        /*  new AlertDialog.Builder(context)
                 .setTitle("Iniciar sesión")
                 .setMessage("Usuario iniciado con éxito")
                 .setPositiveButton("Aceptar", (dialog, which) -> navController.navigate(R.id.nav_home))
-                .show();
+                .show();*/
     }
 }
