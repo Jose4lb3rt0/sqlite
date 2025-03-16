@@ -38,7 +38,13 @@ public class MainActivity extends AppCompatActivity {
         NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment_activity_main);
         NavigationUI.setupWithNavController(binding.navView, navController);
 
-
+        //ocultar bottomnav de login y register
+        navController.addOnDestinationChangedListener((controller, destination, arguments) -> {
+            if (destination.getId() == R.id.nav_login || destination.getId() == R.id.nav_register ){
+                binding.navView.setVisibility(BottomNavigationView.GONE);
+            }else {
+                binding.navView.setVisibility(BottomNavigationView.VISIBLE);
+            }
+        });
     }
-
 }
