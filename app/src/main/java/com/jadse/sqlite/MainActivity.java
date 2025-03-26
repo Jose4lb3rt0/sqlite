@@ -20,7 +20,10 @@ public class MainActivity extends AppCompatActivity {
 
     private ActivityMainBinding binding;
     public static String URL_IMAGE = "https://oaemdl.es/images/optica/";
-    public static String URL_API = "https://oaemdl.es/optica_sweb_php/";
+//    public static String URL_API = "https://oaemdl.es/optica_sweb_php/";
+    public static String URL_API = "https://oaemdl.es/login_sweb_php/";
+    //public static String URL_API = "http://localhost/login_sweb_php/";
+    //public static String URL_API = "http://192.168.1.113/login_sweb_php/";
     public static Usuario usuario = null;
 
     FirebaseFirestore fFirestore;

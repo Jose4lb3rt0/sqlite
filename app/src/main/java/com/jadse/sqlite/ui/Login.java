@@ -16,6 +16,11 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 
+import com.android.volley.NetworkResponse;
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.JsonRequest;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -24,6 +29,10 @@ import com.jadse.sqlite.R;
 import com.jadse.sqlite.controller.UsuarioDao;
 import com.jadse.sqlite.databinding.FragmentLoginBinding;
 import com.jadse.sqlite.model.Usuario;
+import com.jadse.sqlite.model.VolleySingleton;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class Login extends Fragment {
     FragmentLoginBinding binding;
@@ -80,7 +89,9 @@ public class Login extends Fragment {
             Snackbar.make(view, "Usuario y/o passwordd inválidos", Snackbar.LENGTH_LONG).show();
         }
 
-        firestore.collection("usuarios")
+        mLogin();
+
+        /*firestore.collection("usuarios")
                 .whereEqualTo("correo", sCorreo)
                 .whereEqualTo("passwordd", sPasswordd)
                 .get()
@@ -121,7 +132,7 @@ public class Login extends Fragment {
                                 .setMessage( "No se pudo comprobar credenciales, reintentar")
                                 .setCancelable(false)
                                 .setPositiveButton( "Aceptar", (dialog, which) -> { } )
-                                .show() );
+                                .show() );*/
         // SQLITE
         //  usuarioDao.Login(sCorreo, sPasswordd);
         /*  new AlertDialog.Builder(context)
@@ -129,5 +140,27 @@ public class Login extends Fragment {
                 .setMessage("Usuario iniciado con éxito")
                 .setPositiveButton("Aceptar", (dialog, which) -> navController.navigate(R.id.nav_home))
                 .show();*/
+    }
+
+    private void mLogin() {
+        String sDni = binding.edtCorreo.getText().toString().trim();
+        String sPasswordd = binding.edtPassword.getText().toString().trim();
+
+        String URL = MainActivity.URL_API + "login";
+        JsonObjectRequest request = new JsonObjectRequest(Request.Method.POST, URL, null, response -> {
+            int i = 0;
+        }, error -> {
+
+        } ) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> params = new HashMap<>();
+                params.put("dni", sDni);
+                params.put("passwordd", sPasswordd);
+                return params;
+            }
+        };
+
+        VolleySingleton.getInstance(context).addToRequestQueue(request);
     }
 }
